@@ -7,7 +7,7 @@ import _thread
 import threading
 import random
 
-apiPath = "http://localhost:8080/"
+apiPath = "http://localhost:8081/"
 
 class TradingRobot:
     username = "123"
@@ -44,8 +44,104 @@ class TradingRobot:
         thread0.start()
         time.sleep(10)
         thread1.start()
+    def LimitOrder(self):
+        headers = {
+            'Content-Type':'application/json'
+        }
+        data={
+            "brokerName": "M",
+            "futureName": "GOLD",
+            "id": -1,
+            "number": 100,
+            "orderId": -1,
+            "orderType": "LIMIT",
+            "pendingNumber": 100,
+            "side": "SELL",
+            "status": "PENDING",
+            "stopPrice": -1,
+            "targetType": "LIMIT",
+            "timestamp": 0,
+            "traderCompany": "A",
+            "traderName": "123",
+            "unitPrice": 100
+        }
+        res = requests.post(apiPath+"order/create",headers = headers,data=json.dumps(data),params={"access_token": self.access_token})
+        print(res)
+    def MarketOrder(self):
+        print("Hello World!")
+        headers = {
+            'Content-Type':'application/json'
+        }
+        data={
+            "brokerName": "M",
+            "futureName": "GOLD",
+            "id": -1,
+            "number": 112,
+            "orderId": -1,
+            "orderType": "MARKET",
+            "pendingNumber": 112,
+            "side": "BUY",
+            "status": "PENDING",
+            "stopPrice": -1,
+            "targetType": "LIMIT",
+            "timestamp": 0,
+            "traderCompany": "A",
+            "traderName": "123",
+            "unitPrice": 0
+        }
+        res = requests.post(apiPath+"order/create",headers = headers,data=json.dumps(data),params={"access_token": self.access_token})
+        print(res)
+    def StopOrder(self):
+        print("Hello World!")
+        headers = {
+            'Content-Type':'application/json'
+        }
+        data={
+            "brokerName": "M",
+            "futureName": "GOLD",
+            "id": -1,
+            "number": 112,
+            "orderId": -1,
+            "orderType": "STOP",
+            "pendingNumber": 112,
+            "side": "BUY",
+            "status": "PENDING",
+            "stopPrice": 90,
+            "targetType": "LIMIT",
+            "timestamp": 0,
+            "traderCompany": "A",
+            "traderName": "123",
+            "unitPrice": 100
+        }
+        res = requests.post(apiPath+"order/create",headers = headers,data=json.dumps(data),params={"access_token": self.access_token})
+        print(res)
+    def CancelOrder(self):
+        print("Hello World!")
+        headers = {
+            'Content-Type':'application/json'
+        }
+        data={
+            "brokerName": "M",
+            "futureName": "GOLD",
+            "id": -1,
+            "number": 112,
+            "orderId": 8,
+            "orderType": "CANCEL",
+            "pendingNumber": 112,
+            "side": "BUY",
+            "status": "PENDING",
+            "stopPrice": 90,
+            "targetType": "LIMIT",
+            "timestamp": 0,
+            "traderCompany": "A",
+            "traderName": "123",
+            "unitPrice": 100
+        }
+        res = requests.post(apiPath+"order/create",headers = headers,data=json.dumps(data),params={"access_token": self.access_token})
+        print(res)
 def main():
     account = TradingRobot("123","123")
     account.login()
-    account.start()
+    account.LimitOrder()
+
 main()
