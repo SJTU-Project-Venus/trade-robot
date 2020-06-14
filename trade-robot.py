@@ -7,15 +7,33 @@ import _thread
 import threading
 import random
 
-apiPath = "http://localhost:8081/"
-
+apiPathA = "http://localhost:8082/"
+apiPathB = "http://localhost:8083/"
+apiPathM = "http://localhost:8080/"
 class TradingRobot:
     username = "123"
     password = "123"
     access_token = ""
-    def __init__(self, username, password):
+    apiPath = ""
+    traderCompany = ""
+    def __init__(self, username, password,traderCompany):
+        if(traderCompany == "A"):
+            self.apiPath = apiPathA
+        else:
+            self.apiPath = apiPathB
         self.username = username
         self.password = password
+        self.traderCompany = traderCompany
+        data = {
+          "password": self.password,
+          "phone": self.username,
+          "traderCompony": self.traderCompany
+        }
+        headers = {
+            'Content-Type':'application/json'
+        }
+        res = requests.post(self.apiPath+"traderUser/register",headers = headers,data=json.dumps(data))
+        
     def login(self):
         params={"username":self.username,
                 "password":self.password,
@@ -24,13 +42,16 @@ class TradingRobot:
                 "client_id":"client_2",
                 "client_secret":"123456"
         }
-        res = requests.get(apiPath+"oauth/token",params=params)
+        res = requests.get(self.apiPath+"oauth/token",params=params)
         self.access_token = res.json()['access_token']
         print("access_token Result:\n", self.access_token)
-    def testGet(self):
-        res = requests.get(apiPath+"order/1",params={"access_token": self.access_token})
-        print("result1:",res.text)
-       
+    def postOrder(self):
+        if(random.random()<0.2):
+            self.LimitOrder()
+        elif(random.random()>0.6):
+            self.MarketOrder()
+        else:
+            self.StopOrder()
     def testPost(self):
         data = {"TestString":"123"}
         headers = {
@@ -48,100 +69,151 @@ class TradingRobot:
         headers = {
             'Content-Type':'application/json'
         }
+        #brokerName
+        brokerName=""
+        if(random.random()<0.5):
+            brokerName="M"
+        else:
+            brokerName = "N"
+        futureName="GOLD"
+        # side
+        side = ""
+        if(random.random()<0.5):
+            side="BUY"
+        else:
+            side = "SELL"
+       # number     
+        number = random.randint(1, 6)*100
+        #unitPrice
+        unitPrice = random.randint(20,30)*10
         data={
-            "brokerName": "M",
-            "futureName": "GOLD",
+            "brokerName": brokerName,
+            "futureName": futureName,
             "id": -1,
-            "number": 100,
+            "number": number,
             "orderId": -1,
             "orderType": "LIMIT",
-            "pendingNumber": 100,
-            "side": "SELL",
+            "pendingNumber": number,
+            "side": side,
             "status": "PENDING",
             "stopPrice": -1,
             "targetType": "LIMIT",
             "timestamp": 0,
-            "traderCompany": "A",
-            "traderName": "123",
-            "unitPrice": 100
+            "traderCompany": self.traderCompany,
+            "traderName": self.username,
+            "unitPrice": unitPrice
         }
-        res = requests.post(apiPath+"order/create",headers = headers,data=json.dumps(data),params={"access_token": self.access_token})
+        res = requests.post(self.apiPath+"order/create",headers = headers,data=json.dumps(data),params={"access_token": self.access_token})
         print(res)
     def MarketOrder(self):
-        print("Hello World!")
         headers = {
             'Content-Type':'application/json'
         }
+        #brokerName
+        brokerName=""
+        if(random.random()<0.5):
+            brokerName="M"
+        else:
+            brokerName = "N"
+        futureName="GOLD"
+        # side
+        side = ""
+        if(random.random()<0.5):
+            side="BUY"
+        else:
+            side = "SELL"
+       # number     
+        number = random.randint(1, 6)*100
+        #unitPrice
+        unitPrice = random.randint(20,30)*10
         data={
-            "brokerName": "M",
-            "futureName": "GOLD",
+            "brokerName": brokerName,
+            "futureName": futureName,
             "id": -1,
-            "number": 112,
+            "number": number,
             "orderId": -1,
             "orderType": "MARKET",
-            "pendingNumber": 112,
-            "side": "BUY",
+            "pendingNumber": number,
+            "side": side,
             "status": "PENDING",
             "stopPrice": -1,
             "targetType": "LIMIT",
             "timestamp": 0,
-            "traderCompany": "A",
-            "traderName": "123",
+            "traderCompany": self.traderCompany,
+            "traderName": self.username,
             "unitPrice": 0
         }
-        res = requests.post(apiPath+"order/create",headers = headers,data=json.dumps(data),params={"access_token": self.access_token})
+        res = requests.post(self.apiPathM+"order/create",headers = headers,data=json.dumps(data),params={"access_token": self.access_token})
         print(res)
     def StopOrder(self):
         print("Hello World!")
         headers = {
             'Content-Type':'application/json'
         }
+        #brokerName
+        brokerName=""
+        if(random.random()<0.5):
+            brokerName="M"
+        else:
+            brokerName = "N"
+        futureName="GOLD"
+        # side
+        side = ""
+        if(random.random()<0.5):
+            side="BUY"
+        else:
+            side = "SELL"
+       # number     
+        number = random.randint(1, 6)*100
+        #unitPrice
+        unitPrice = random.randint(20,30)*10
+        #stopPrice
+        stopPrice = random.randint(20,30)*10
+        #targetType
+        targetType = ""
+        if(random.random()<0.5):
+            targetType="LIMIT"
+        else:
+            targetType="MARKET"
         data={
-            "brokerName": "M",
-            "futureName": "GOLD",
+            "brokerName": brokerName,
+            "futureName": futureName,
             "id": -1,
-            "number": 112,
+            "number": number,
             "orderId": -1,
             "orderType": "STOP",
-            "pendingNumber": 112,
-            "side": "BUY",
+            "pendingNumber": number,
+            "side": side,
             "status": "PENDING",
-            "stopPrice": 90,
-            "targetType": "LIMIT",
+            "stopPrice": stopPrice,
+            "targetType": targetType,
             "timestamp": 0,
-            "traderCompany": "A",
-            "traderName": "123",
-            "unitPrice": 100
+            "traderCompany": self.traderCompany,
+            "traderName": self.username,
+            "unitPrice": unitPrice
         }
-        res = requests.post(apiPath+"order/create",headers = headers,data=json.dumps(data),params={"access_token": self.access_token})
+        res = requests.post(self.apiPath+"order/create",headers = headers,data=json.dumps(data),params={"access_token": self.access_token})
         print(res)
-    def CancelOrder(self):
-        print("Hello World!")
-        headers = {
-            'Content-Type':'application/json'
+class Robot:
+    def initFutureName(self):
+        data = {
+            "name":"GOLD"
         }
-        data={
-            "brokerName": "M",
-            "futureName": "GOLD",
-            "id": -1,
-            "number": 112,
-            "orderId": 8,
-            "orderType": "CANCEL",
-            "pendingNumber": 112,
-            "side": "BUY",
-            "status": "PENDING",
-            "stopPrice": 90,
-            "targetType": "LIMIT",
-            "timestamp": 0,
-            "traderCompany": "A",
-            "traderName": "123",
-            "unitPrice": 100
-        }
-        res = requests.post(apiPath+"order/create",headers = headers,data=json.dumps(data),params={"access_token": self.access_token})
-        print(res)
+        requests.post(self.apiPath+"/addFuture",headers = headers,data=json.dumps(data))
+    def start(self):
+        self.initFutureName()
+        account1 = TradingRobot("123","123","A")
+        #account2 = TradingRobot("wzy","123","B")
+        account1.login()
+        #account2.login()
+        for num in range(0,120):
+            time.sleep(2)
+            account1.postOrder()
+            #if(random.random()<0.5):
+              #  account1.postOrder()
+            #else:
+              #  account2.postOrder()
 def main():
-    account = TradingRobot("123","123")
-    account.login()
-    account.LimitOrder()
-
+    robot = Robot()
+    robot.start()
 main()
