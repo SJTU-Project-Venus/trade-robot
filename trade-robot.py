@@ -194,12 +194,12 @@ class TradingRobot:
 class Robot:
     def initFutureName(self):
         futureNames = ['OIL-SEP22','OIL-MAR01','GOLD-JUN18','GOLD-FEB22','GOLD-SEP13']
-        for each in member:
+        for each in futureNames:
             data = {
                 "name":each
             }
             requests.post(apiPathM+"/addFuture",headers = headers,data=json.dumps(data))
-        for each in member:
+        for each in futureNames:
             data = {
                 "name":each
             }
