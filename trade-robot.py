@@ -193,6 +193,9 @@ class TradingRobot:
         print(res)
 class Robot:
     def initFutureName(self):
+        headers = {
+            'Content-Type':'application/json'
+        }
         futureNames = ['OIL-SEP22','OIL-MAR01','GOLD-JUN18','GOLD-FEB22','GOLD-SEP13']
         for each in futureNames:
             data = {
