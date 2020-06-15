@@ -7,9 +7,11 @@ import _thread
 import threading
 import random
 
-apiPathA = "http://localhost:8082/"
-apiPathB = "http://localhost:8083/"
-apiPathM = "http://localhost:8080/"
+apiPathA = "http://202.120.40.8:30383/A/"
+apiPathB = "http://202.120.40.8:30383/B/"
+apiPathN = "http://202.120.40.8:30382/one/"
+apiPathM = "http://202.120.40.8:30382/two/"
+
 class TradingRobot:
     username = "123"
     password = "123"
@@ -143,10 +145,9 @@ class TradingRobot:
             "traderName": self.username,
             "unitPrice": 0
         }
-        res = requests.post(self.apiPathM+"order/create",headers = headers,data=json.dumps(data),params={"access_token": self.access_token})
+        res = requests.post(self.apiPath+"order/create",headers = headers,data=json.dumps(data),params={"access_token": self.access_token})
         print(res)
     def StopOrder(self):
-        print("Hello World!")
         headers = {
             'Content-Type':'application/json'
         }
@@ -196,24 +197,29 @@ class TradingRobot:
         print(res)
 class Robot:
     def initFutureName(self):
-        data = {
-            "name":"GOLD"
-        }
-        requests.post(self.apiPath+"/addFuture",headers = headers,data=json.dumps(data))
+        futureNames = ['OIL-SEP22','OIL-MAR01','GOLD-JUN18','GOLD-FEB22','GOLD-SEP13']
+        for each in member:
+            data = {
+                "name":each
+            }
+            requests.post(apiPathM+"/addFuture",headers = headers,data=json.dumps(data))
+        for each in member:
+            data = {
+                "name":each
+            }
+            requests.post(apiPathN+"/addFuture",headers = headers,data=json.dumps(data))
     def start(self):
         self.initFutureName()
         account1 = TradingRobot("123","123","A")
-        #account2 = TradingRobot("wzy","123","B")
+        account2 = TradingRobot("wzy","123","B")
         account1.login()
-        #account2.login()
-        for num in range(0,120):
+        account2.login()
+        for num in range(0,240):
             time.sleep(2)
-            account1.postOrder()
-            #if(random.random()<0.5):
-              #  account1.postOrder()
-            #else:
-              #  account2.postOrder()
+            if(random.random()<0.5):
+                account1.postOrder()
+            else:
+                account2.postOrder()
 def main():
     robot = Robot()
     robot.start()
-main()
