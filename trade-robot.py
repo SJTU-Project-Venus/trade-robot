@@ -201,12 +201,12 @@ class Robot:
             data = {
                 "name":each
             }
-            requests.post(apiPathM+"/addFuture",headers = headers,data=json.dumps(data))
+            requests.post(apiPathM+"addFuture",headers = headers,data=json.dumps(data))
         for each in futureNames:
             data = {
                 "name":each
             }
-            requests.post(apiPathN+"/addFuture",headers = headers,data=json.dumps(data))
+            requests.post(apiPathN+"addFuture",headers = headers,data=json.dumps(data))
     def start(self):
         self.initFutureName()
         account1 = TradingRobot("123","123","A")
