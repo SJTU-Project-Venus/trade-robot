@@ -48,12 +48,7 @@ class TradingRobot:
         self.access_token = res.json()['access_token']
         print("access_token Result:\n", self.access_token)
     def postOrder(self):
-        if(random.random()<0.2):
-            self.LimitOrder()
-        elif(random.random()>0.6):
-            self.MarketOrder()
-        else:
-            self.StopOrder()
+        self.LimitOrder()
     def testPost(self):
         data = {"TestString":"123"}
         headers = {
@@ -77,17 +72,19 @@ class TradingRobot:
             brokerName="M"
         else:
             brokerName = "N"
-        futureName="GOLD"
+        futureName="OIL-SEP22"
         # side
         side = ""
-        if(random.random()<0.5):
+        unitPrice = 0
+        if(random.random()<0.3):
             side="BUY"
+            unitPrice = random.randint(18,28)*10
         else:
             side = "SELL"
+            unitPrice = random.randint(24,34)*10
        # number     
         number = random.randint(1, 6)*100
         #unitPrice
-        unitPrice = random.randint(20,30)*10
         data={
             "brokerName": brokerName,
             "futureName": futureName,
@@ -214,7 +211,7 @@ class Robot:
         account2 = TradingRobot("wzy","123","B")
         account1.login()
         account2.login()
-        for num in range(0,240):
+        for num in range(0,60):
             time.sleep(2)
             if(random.random()<0.5):
                 account1.postOrder()
@@ -223,3 +220,4 @@ class Robot:
 def main():
     robot = Robot()
     robot.start()
+main()
